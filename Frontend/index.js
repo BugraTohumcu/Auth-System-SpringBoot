@@ -1,10 +1,8 @@
 
-let username = document.getElementById("user-name").value;
-let password = document.getElementById("password").value;
-let response = document.getElementById("username-response");
 function submitRegisterForm(){
-
-    
+    let username = document.getElementById("user-name").value;
+    let password = document.getElementById("password").value;
+    let response = document.getElementById("username-response");
     fetch('http://localhost:8080/register', {
         method:'POST',
         headers: {'Content-type': 'application/json'},
@@ -14,6 +12,9 @@ function submitRegisterForm(){
 }
 
 function submitLoginForm(){
+    let username = document.getElementById("user-name").value;
+    let password = document.getElementById("password").value;
+    let response = document.getElementById("username-response");
     fetch('http://localhost:8080/login', {
         method:'POST',
         headers: {'Content-type': 'application/json'},
