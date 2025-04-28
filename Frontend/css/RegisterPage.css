@@ -1,0 +1,126 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: rgb(248, 255, 234);
+}
+
+:root{
+    --container: rgb(156, 125, 125);
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 400px;
+    background-color: var(--container);
+    border-radius: 30px;
+    box-shadow: 5px 5px 5px black;
+}
+
+
+#register-form{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 300px;
+    height: 300px;
+}
+
+label{
+    font-size: 18px;
+    display: block;
+    position: absolute;
+    top: 7px;
+    transition: 0.4s;
+}
+
+
+#submit-btn{
+    display: inline;
+    width: 150px;
+}
+
+input{
+    width: 300px;
+    height: 35px;
+    border: none;
+    border-bottom: 1px solid wheat;
+    background-color: var(--container);
+    color: white;
+    font-size: 15px;
+}
+
+.register{
+    position: relative;
+    background-color: rgb(152, 142, 142);
+}
+
+
+input:focus{
+    outline: none;
+}
+
+
+.register input:valid + label,
+input:focus + label{
+   top: -20px;
+}
+
+#submit-btn{
+    cursor: pointer;
+    padding: 7px;
+    border: none;
+    font-size: 1rem;
+    border-radius: 10px;
+    text-shadow: 0px 0px 0px black;
+    transition: 0.2s;
+}
+#submit-btn{
+    width: 150px;
+    position: relative;
+    z-index: 1;
+}
+
+#submit-btn::after{
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 100%;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    transition: 0.5s;
+    border-radius:10px;
+    z-index: -1;
+
+}
+
+#submit-btn:hover::after{
+    width: 100%;
+    background-color: rgb(139, 85, 85);
+}
+
+
+#submit-btn:hover{
+    color: white;
+    outline: none;
+}
+
+
+.sign-up{
+   position: relative;
+   top: -20px;
+}
