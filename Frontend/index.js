@@ -1,27 +1,38 @@
+function submitForm(url, username, password, responseElement) {
+    if (!username || !password) {
+        responseElement.innerHTML = "Username and password are required!";
+        return;
+    }
 
-function submitRegisterForm(){
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username, password: password })
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return res.text();
+    })
+    .then(data => {
+        responseElement.innerHTML = data;
+    })
+    .catch(error => {
+        responseElement.innerHTML = `Error: ${error.message}`;
+    });
+}
+
+function submitRegisterForm() {
     let username = document.getElementById("user-name").value;
     let password = document.getElementById("password").value;
     let response = document.getElementById("username-response");
-    fetch('http://localhost:8080/register', {
-        method:'POST',
-        headers: {'Content-type': 'application/json'},
-        body: JSON.stringify({username: username , password: password})
-    }).then(res => res.text())
-    .then(data => response.innerHTML = data);
+    submitForm('http://localhost:8080/register', username, password, response);
 }
 
-function submitLoginForm(){
+function submitLoginForm() {
     let username = document.getElementById("user-name").value;
     let password = document.getElementById("password").value;
     let response = document.getElementById("username-response");
-    fetch('http://localhost:8080/login', {
-        method:'POST',
-        headers: {'Content-type': 'application/json'},
-        body: JSON.stringify({username: username , password: password})
-    }).then(res => res.text())
-    .then(data => response.innerHTML = data);
-
+    submitForm('http://localhost:8080/login', username, password, response);
 }
-
-
