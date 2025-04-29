@@ -4,6 +4,7 @@ package com.bugra.full_stack_login_app.controller;
 import com.bugra.full_stack_login_app.model.User;
 import com.bugra.full_stack_login_app.request.UsernamePasswordRequest;
 import com.bugra.full_stack_login_app.responses.UserResponseMessage;
+import com.bugra.full_stack_login_app.security.JWTokenProvider;
 import com.bugra.full_stack_login_app.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,12 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final JWTokenProvider jwTokenProvider;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
+        this.jwTokenProvider = jwTokenProvider;
     }
 
     @PostMapping("/register")
@@ -44,6 +47,7 @@ public class AuthController {
         if(user !=null ){
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
                     request.getPassword()));
+            System.out.println(jwTokenProvider.generateToken(request.getUsername()));
             return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL,HttpStatus.OK);
         }
 
