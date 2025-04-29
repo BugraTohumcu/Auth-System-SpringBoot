@@ -27,6 +27,7 @@ public class UserServiceImp implements UserService{
         User newUser = new User();
         newUser.setUsername(request.getUsername());
         newUser.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+
         if(userRepo.findUserByUsername(request.getUsername()) != null){
             return UserResponseMessage.USERNAME_EXIST;
         }
