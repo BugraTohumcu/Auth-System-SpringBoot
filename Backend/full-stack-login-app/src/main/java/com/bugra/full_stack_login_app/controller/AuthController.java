@@ -42,12 +42,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UsernamePasswordRequest request){
+        System.out.println(request.toString());
         User user = userService.getByUserName(request.getUsername());
 
         if(user !=null ){
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
                     request.getPassword()));
-            System.out.println(jwTokenProvider.generateToken(request.getUsername()));
+            if(auth.isAuthenticated()) System.out.println(jwTokenProvider.generateToken(request.getUsername()));
             return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL,HttpStatus.OK);
         }
 
