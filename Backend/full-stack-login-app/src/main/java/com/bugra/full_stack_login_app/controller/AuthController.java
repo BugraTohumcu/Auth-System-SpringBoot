@@ -43,7 +43,7 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody UsernamePasswordRequest request , HttpServletResponse response){
         try{
             String token = authService.loginAndGenerateToken(request);
-            System.out.println("JWT Token : "+token);
+            System.out.println("JWT Token : "+ token);
             ResponseCookie responseCookie = cookieService.createResponseCookie("JWT", token);
             response.addHeader("Set-Cookie" , responseCookie.toString());
             return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL ,HttpStatus.ACCEPTED);
