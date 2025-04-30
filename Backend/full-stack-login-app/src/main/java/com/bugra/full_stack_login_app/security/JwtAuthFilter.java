@@ -2,8 +2,10 @@ package com.bugra.full_stack_login_app.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,31 +31,54 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    Cookie[] cookies = request.getCookies();
+    String token = null;
+    String username = null;
+
+    if(cookies != null){
+        for(Cookie cookie : cookies){
+            if(cookie.getName().equals("JWT")){
+                token = cookie.getValue();
+                break;
+            }
+        }
+    }
 
 
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        String username = null;
-
-        if(authHeader !=null && authHeader.startsWith("Bearer ")){
-                token = authHeader.substring(7);
-                username = tokenProvider.extractUsername(token);
+    if (token != null) {
+        try {
+            username = tokenProvider.extractUsername(token);
+            
+            if(tokenProvider.shouldRefreshToken(token)) {
+                token = tokenProvider.generateToken(username);
+                ResponseCookie resCookie = ResponseCookie.from("JWT", token)
+                        .httpOnly(true)
+                        .sameSite("None")
+                        .secure(true)
+                        .path("/")
+                        .maxAge(60 * 60 * 24)
+                        .build();
+                response.addHeader("Set-Cookie", resCookie.toString());
             }
 
             if(StringUtils.hasText(username) && SecurityContextHolder.getContext().getAuthentication()==null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if(userDetails !=null && tokenProvider.validateToken(token,userDetails)){
+                if(userDetails != null && tokenProvider.validateToken(token,userDetails)){
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails.getUsername(),null,userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(userDetails.getUsername(),userDetails.getPassword(),userDetails.getAuthorities());
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-
             }
-                filterChain.doFilter(request,response);
+        } catch (Exception e) {
+
+            logger.error("Something went wrong " + e.getMessage());
+        }
     }
+
+    filterChain.doFilter(request,response);
+}
 
 }

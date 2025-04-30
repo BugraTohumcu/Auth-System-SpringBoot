@@ -2,10 +2,14 @@ package com.bugra.full_stack_login_app.security;
 
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.security.Key;
@@ -23,8 +27,6 @@ public class JWTokenProvider  implements  JwtTokenService{
     }
 
 
-
-
     public String generateToken(String username){
         HashMap<String,Object> claims = new HashMap<>();
 
@@ -32,7 +34,7 @@ public class JWTokenProvider  implements  JwtTokenService{
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*3))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24))
                 .signWith(getKey())
                 .compact();
     }
@@ -70,6 +72,17 @@ public class JWTokenProvider  implements  JwtTokenService{
     @Override
     public boolean validateToken(String token, UserDetails userDetails) {
         return (userDetails.getUsername().equals(extractUsername(token)) && !isExpired(token));
+    }
+
+
+    public boolean shouldRefreshToken(String token) {
+        try {
+            Date expiration = extractExpiration(token);
+            long timeLeft = expiration.getTime() - System.currentTimeMillis();
+            return timeLeft <= 1000 * 60 * 60;
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
     }
 
 

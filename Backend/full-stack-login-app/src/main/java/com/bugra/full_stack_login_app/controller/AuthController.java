@@ -5,8 +5,10 @@ import com.bugra.full_stack_login_app.model.User;
 import com.bugra.full_stack_login_app.request.UsernamePasswordRequest;
 import com.bugra.full_stack_login_app.responses.UserResponseMessage;
 import com.bugra.full_stack_login_app.security.JWTokenProvider;
-import com.bugra.full_stack_login_app.service.UserService;
+import com.bugra.full_stack_login_app.service.user_services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,9 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://127.0.0.1:5500/LoginPage.html" ,allowCredentials = "true")
 public class AuthController {
 
 
@@ -41,13 +42,26 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UsernamePasswordRequest request){
+    public ResponseEntity<String> login(@RequestBody UsernamePasswordRequest request , HttpServletResponse response){
         User user = userService.getByUserName(request.getUsername());
 
         if(user !=null ){
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
                     request.getPassword()));
-            if(auth.isAuthenticated()) System.out.println(jwTokenProvider.generateToken(request.getUsername()));
+            if(auth.isAuthenticated()){
+                String token = jwTokenProvider.generateToken(request.getUsername());
+                System.out.println("token from AuthController login method: "+token);
+
+                ResponseCookie resCookie = ResponseCookie.from("JWT", token)
+                        .httpOnly(true)
+                        .sameSite("None")
+                        .secure(true)
+                        .path("/")
+                        .maxAge(60*60*24)
+                        .build();
+                response.addHeader("Set-Cookie", resCookie.toString());
+
+            }
             return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL,HttpStatus.OK);
         }
 

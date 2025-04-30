@@ -1,4 +1,4 @@
-package com.bugra.full_stack_login_app.service;
+package com.bugra.full_stack_login_app.service.user_services;
 
 import com.bugra.full_stack_login_app.model.User;
 import org.springframework.security.core.userdetails.UserDetails;

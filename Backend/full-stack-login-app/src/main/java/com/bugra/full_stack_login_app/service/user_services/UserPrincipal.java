@@ -1,9 +1,8 @@
-package com.bugra.full_stack_login_app.service;
+package com.bugra.full_stack_login_app.service.user_services;
 
 import com.bugra.full_stack_login_app.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
