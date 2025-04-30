@@ -5,6 +5,7 @@ import com.bugra.full_stack_login_app.model.User;
 import com.bugra.full_stack_login_app.request.UsernamePasswordRequest;
 import com.bugra.full_stack_login_app.responses.UserResponseMessage;
 import com.bugra.full_stack_login_app.security.JWTokenProvider;
+import com.bugra.full_stack_login_app.service.CookieService;
 import com.bugra.full_stack_login_app.service.user_services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -26,12 +27,14 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final JWTokenProvider jwTokenProvider;
+    private final JWTokenProvider jwtTokenProvider;
+    private final CookieService cookieService;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider, CookieService cookieService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.jwTokenProvider = jwTokenProvider;
+        this.jwtTokenProvider = jwTokenProvider;
+        this.cookieService = cookieService;
     }
 
     @PostMapping("/register")
@@ -49,16 +52,10 @@ public class AuthController {
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
                     request.getPassword()));
             if(auth.isAuthenticated()){
-                String token = jwTokenProvider.generateToken(request.getUsername());
-                System.out.println("token from AuthController login method: "+token);
+                String token = jwtTokenProvider.generateToken(request.getUsername());
+                System.out.println("token from AuthController login() method: "+token);
 
-                ResponseCookie resCookie = ResponseCookie.from("JWT", token)
-                        .httpOnly(true)
-                        .sameSite("None")
-                        .secure(true)
-                        .path("/")
-                        .maxAge(60*60*24)
-                        .build();
+                ResponseCookie resCookie = cookieService.createResponseCookie("JWT",token);
                 response.addHeader("Set-Cookie", resCookie.toString());
 
             }
