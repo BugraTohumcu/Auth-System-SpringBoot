@@ -1,19 +1,16 @@
 package com.bugra.full_stack_login_app.controller;
 
 
-import com.bugra.full_stack_login_app.model.User;
+
 import com.bugra.full_stack_login_app.request.UsernamePasswordRequest;
 import com.bugra.full_stack_login_app.responses.UserResponseMessage;
-import com.bugra.full_stack_login_app.security.JWTokenProvider;
+import com.bugra.full_stack_login_app.service.AuthService;
 import com.bugra.full_stack_login_app.service.CookieService;
 import com.bugra.full_stack_login_app.service.user_services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,14 +23,12 @@ public class AuthController {
 
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JWTokenProvider jwtTokenProvider;
+    private final AuthService authService;
     private final CookieService cookieService;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JWTokenProvider jwTokenProvider, CookieService cookieService) {
+    public AuthController(UserService userService,AuthService authService, CookieService cookieService) {
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwTokenProvider;
+        this.authService = authService;
         this.cookieService = cookieService;
     }
 
@@ -46,22 +41,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UsernamePasswordRequest request , HttpServletResponse response){
-        User user = userService.getByUserName(request.getUsername());
-
-        if(user !=null ){
-            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
-                    request.getPassword()));
-            if(auth.isAuthenticated()){
-                String token = jwtTokenProvider.generateToken(request.getUsername());
-                System.out.println("token from AuthController login() method: "+token);
-
-                ResponseCookie resCookie = cookieService.createResponseCookie("JWT",token);
-                response.addHeader("Set-Cookie", resCookie.toString());
-
-            }
-            return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL,HttpStatus.OK);
+        try{
+            String token = authService.loginAndGenerateToken(request);
+            System.out.println("JWT Token : "+token);
+            ResponseCookie responseCookie = cookieService.createResponseCookie("JWT", token);
+            response.addHeader("Set-Cookie" , responseCookie.toString());
+            return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL ,HttpStatus.ACCEPTED);
+        }catch (Exception e){
+            System.out.println("Something went wrong " +e.getMessage());
+            return new ResponseEntity<>(UserResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(UserResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 }
