@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class CookieService {
 
-
-
     public String getToken(HttpServletRequest request){
         String token= null;
         Cookie[] cookies = request.getCookies();
@@ -25,6 +23,7 @@ public class CookieService {
        }
         return  token;
     }
+
 
     public ResponseCookie createResponseCookie(String name, String value){
         return ResponseCookie.from(name,value)

@@ -26,10 +26,9 @@ public class AuthService {
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
 
-            if(authToken.isAuthenticated()){
-                token = tokenProvider.generateToken(user.getUsername());
-                return token;
-            }
+            token = tokenProvider.generateToken(user.getUsername());
+            return token;
+
         }
 
         return null;
