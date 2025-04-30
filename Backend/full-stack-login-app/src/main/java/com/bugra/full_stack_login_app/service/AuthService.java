@@ -19,14 +19,17 @@ public class AuthService {
     }
 
     public String loginAndGenerateToken(UsernamePasswordRequest request) {
-        String token = null;
+        String token;
         User user = userService.getByUserName(request.getUsername());
 
         if(user != null){
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
-            token = tokenProvider.generateToken(user.getUsername());
-            return token;
+
+            if(authToken.isAuthenticated()){
+                token = tokenProvider.generateToken(user.getUsername());
+                return token;
+            }
         }
 
         return null;
