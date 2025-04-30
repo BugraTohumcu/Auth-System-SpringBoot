@@ -42,7 +42,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UsernamePasswordRequest request){
-        System.out.println(request.toString());
         User user = userService.getByUserName(request.getUsername());
 
         if(user !=null ){
