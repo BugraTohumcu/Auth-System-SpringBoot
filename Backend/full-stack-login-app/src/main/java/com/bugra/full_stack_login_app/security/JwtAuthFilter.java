@@ -1,8 +1,8 @@
 package com.bugra.full_stack_login_app.security;
 
+import com.bugra.full_stack_login_app.service.CookieService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseCookie;
@@ -23,26 +23,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JWTokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
+    private final CookieService cookieService;
 
-    public JwtAuthFilter(JWTokenProvider tokenProvider, UserDetailsService userDetailsService) {
+    public JwtAuthFilter(JWTokenProvider tokenProvider, UserDetailsService userDetailsService, CookieService cookieService) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
+        this.cookieService = cookieService;
+
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-    Cookie[] cookies = request.getCookies();
-    String token = null;
-    String username = null;
+    String token = cookieService.getToken(request);
+    String username;
 
-    if(cookies != null){
-        for(Cookie cookie : cookies){
-            if(cookie.getName().equals("JWT")){
-                token = cookie.getValue();
-                break;
-            }
-        }
-    }
 
 
     if (token != null) {
