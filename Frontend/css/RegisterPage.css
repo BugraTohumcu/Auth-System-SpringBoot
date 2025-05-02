@@ -47,7 +47,7 @@ label{
 }
 
 
-#submit-btn{
+#register-btn{
     display: inline;
     width: 150px;
 }
@@ -78,7 +78,7 @@ input:focus + label{
    top: -20px;
 }
 
-#submit-btn{
+#register-btn{
     cursor: pointer;
     padding: 7px;
     border: none;
@@ -87,13 +87,13 @@ input:focus + label{
     text-shadow: 0px 0px 0px black;
     transition: 0.2s;
 }
-#submit-btn{
+#register-btn{
     width: 150px;
     position: relative;
     z-index: 1;
 }
 
-#submit-btn::after{
+#register-btn::after{
     position: absolute;
     content: "";
     width: 0;
@@ -108,13 +108,13 @@ input:focus + label{
 
 }
 
-#submit-btn:hover::after{
+#register-btn:hover::after{
     width: 100%;
     background-color: rgb(139, 85, 85);
 }
 
 
-#submit-btn:hover{
+#register-btn:hover{
     color: white;
     outline: none;
 }
