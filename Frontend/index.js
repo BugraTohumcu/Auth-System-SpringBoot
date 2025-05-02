@@ -1,10 +1,16 @@
-function submitForm(url, username, password, responseElement) {
+document.getElementById("login-btn").addEventListener("click",submitLoginForm);
+document.getElementById("register-btn").addEventListener("click",submitRegisterForm);
+
+
+
+
+async function submitForm(url, username, password, responseElement) {
     if (!username || !password) {
         responseElement.innerHTML = "Username and password are required!";
         return;
     }
 
-    fetch(url, {
+    let response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -18,7 +24,6 @@ function submitForm(url, username, password, responseElement) {
     })
     .then(data => {
         responseElement.innerHTML = data;
-
         return fetch('http://localhost:8080/hello', {
             method: 'GET',
             headers: { 'Content-Type': 'text/plain' },
@@ -28,6 +33,8 @@ function submitForm(url, username, password, responseElement) {
     .catch(error => {
         responseElement.innerHTML = `Error: ${error.message}`;
     });
+
+    return response;
 }
 
 function submitRegisterForm() {
@@ -37,9 +44,17 @@ function submitRegisterForm() {
     submitForm('http://localhost:8080/register', username, password, response);
 }
 
-function submitLoginForm() {
+async function submitLoginForm() {
     let username = document.getElementById("user-name").value;
     let password = document.getElementById("password").value;
     let response = document.getElementById("username-response");
-    submitForm('http://localhost:8080/login', username, password, response);
+    let res = await submitForm('http://localhost:8080/login', username, password, response);
+
+    if(res && res.ok) {
+        window.location.href = 'http://localhost:8080/hello';
+    }else{
+        alert("Login failed! Please check your credentials.");
+    }
+
+
 }
