@@ -1,4 +1,4 @@
-import {submitForm} from './SubmitForm.js'
+import {submitForm} from './FromHandler.js'
 
 export function submitRegisterForm() {
     let username = document.getElementById("user-name").value;
