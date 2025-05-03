@@ -2,6 +2,7 @@ package com.bugra.full_stack_login_app.config;
 
 
 import com.bugra.full_stack_login_app.security.JwtAuthFilter;
+import com.bugra.full_stack_login_app.security.JwtEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,10 +30,12 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final JwtAuthFilter jwtAuthFilter;
+    private final JwtEntryPoint jwtEntryPoint;
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthFilter jwtAuthFilter, JwtEntryPoint jwtEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
+        this.jwtEntryPoint = jwtEntryPoint;
     }
 
 
@@ -67,7 +70,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/register" ,"/login").permitAll().anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e-> e.authenticationEntryPoint(jwtEntryPoint));
+
 
         return httpSecurity.build();
     }
