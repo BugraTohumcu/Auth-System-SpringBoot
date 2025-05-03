@@ -1,5 +1,5 @@
-import {submitLoginForm} from './utils/Login.js'
-import {submitRegisterForm} from './utils/Register.js'
+import {submitLoginForm} from './FormHandlers/Login.js'
+import {submitRegisterForm} from './FormHandlers/Register.js'
 
 
 
