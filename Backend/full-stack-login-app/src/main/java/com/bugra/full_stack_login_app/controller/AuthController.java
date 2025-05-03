@@ -53,7 +53,7 @@ public class AuthController {
             response.addHeader("Set-Cookie" , responseCookie.toString());
             return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL ,HttpStatus.ACCEPTED);
         }catch (Exception e){
-            System.out.println("Something went wrong " +e.getMessage());
+            logger.warn("Something went wrong: {}",e.getMessage());
             return new ResponseEntity<>(UserResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
