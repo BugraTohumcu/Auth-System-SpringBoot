@@ -6,22 +6,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetTime;
+import java.util.Arrays;
+import java.util.Optional;
+
 @Service
 public class CookieService {
 
     public String getToken(HttpServletRequest request){
-        String token= null;
         Cookie[] cookies = request.getCookies();
 
-       if(cookies != null){
-           for(Cookie cookie : cookies){
-               if(cookie.getName().equals("JWT")){
-                   token = cookie.getValue();
-                   break;
-               }
-           }
+       if(cookies !=null){
+           return Arrays.stream(cookies)
+                   .filter(n -> n.getName().equals("JWT"))
+                   .map(Cookie::getValue)
+                   .findFirst()
+                   .orElse(null);
        }
-        return  token;
+        return null;
     }
 
 
