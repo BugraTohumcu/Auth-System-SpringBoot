@@ -5,10 +5,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
-
-import java.time.OffsetTime;
 import java.util.Arrays;
-import java.util.Optional;
 
 @Service
 public class CookieService {
