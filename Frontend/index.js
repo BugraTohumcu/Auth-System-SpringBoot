@@ -4,7 +4,13 @@ import {submitRegisterForm} from './FormHandlers/Register.js'
 
 
 
-document.getElementById("login-btn").addEventListener("click",submitLoginForm);
-document.getElementById("register-btn").addEventListener("click",submitRegisterForm);
+const loginBtn = document.getElementById("login-btn");
+if (loginBtn) {
+    loginBtn.addEventListener("click", submitLoginForm);
+}
 
+const registerBtn = document.getElementById("register-btn");
+if (registerBtn) {
+    registerBtn.addEventListener("click", submitRegisterForm);
+}
 
