@@ -1,0 +1,47 @@
+version:  "3.8"
+
+
+services:
+  app:
+    container_name: login-app
+    ports:
+      - "8080:8080"
+    build: .
+    networks:
+      - my-network
+
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-lg
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: login-app
+
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+
+    volumes:
+      - postgres-u-data:/var/lib/postgresql/data
+
+  frontend:
+    build: ../../Frontend/
+    container_name: frontend
+    ports:
+      - "127.0.0.1:5500:80"
+    networks:
+      - my-network
+
+
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  postgres-u-data:
