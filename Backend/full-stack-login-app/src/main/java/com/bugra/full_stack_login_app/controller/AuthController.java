@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500/LoginPage.html" ,allowCredentials = "true")
+@CrossOrigin(origins = "http://127.0.0.1:5500" ,allowCredentials = "true")
 public class AuthController {
 
 
@@ -49,6 +49,7 @@ public class AuthController {
         try{
             String token = authService.loginAndGenerateToken(request);
             logger.debug("Extracted JWT token:  {}" ,token);
+            if(token == null){ throw new Exception("Token is null");}
             ResponseCookie responseCookie = cookieService.createResponseCookie("JWT", token);
             response.addHeader("Set-Cookie" , responseCookie.toString());
             return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL ,HttpStatus.ACCEPTED);
