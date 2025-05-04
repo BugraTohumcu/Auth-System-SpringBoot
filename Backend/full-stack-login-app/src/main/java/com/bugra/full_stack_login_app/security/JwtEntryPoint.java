@@ -13,6 +13,6 @@ import java.io.IOException;
 public class JwtEntryPoint  implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException{
-        response.sendRedirect("http://127.0.0.1:5500/LoginPage.html");
+        response.sendRedirect("http://127.0.0.1:5500/index.html");
     }
 }
