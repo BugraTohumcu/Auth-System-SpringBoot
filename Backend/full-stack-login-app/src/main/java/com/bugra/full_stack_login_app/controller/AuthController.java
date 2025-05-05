@@ -2,7 +2,8 @@ package com.bugra.full_stack_login_app.controller;
 
 
 
-import com.bugra.full_stack_login_app.request.UsernamePasswordRequest;
+import com.bugra.full_stack_login_app.dto.ResponseMessage;
+import com.bugra.full_stack_login_app.dto.request.UsernamePasswordRequest;
 import com.bugra.full_stack_login_app.responses.UserResponseMessage;
 import com.bugra.full_stack_login_app.service.AuthService;
 import com.bugra.full_stack_login_app.service.CookieService;
@@ -38,9 +39,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerNewUser(@RequestBody UsernamePasswordRequest request){
-        String response = userService.saveNewUser(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<ResponseMessage> registerNewUser(@RequestBody UsernamePasswordRequest request){
+        ResponseMessage response = userService.saveNewUser(request);
+        if(response.isSuccess()){
+            return new ResponseEntity<>(response , HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(response , HttpStatus.CONFLICT);
     }
 
 

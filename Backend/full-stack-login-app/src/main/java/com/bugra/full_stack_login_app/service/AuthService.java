@@ -1,7 +1,7 @@
 package com.bugra.full_stack_login_app.service;
 
 import com.bugra.full_stack_login_app.model.User;
-import com.bugra.full_stack_login_app.request.UsernamePasswordRequest;
+import com.bugra.full_stack_login_app.dto.request.UsernamePasswordRequest;
 import com.bugra.full_stack_login_app.security.JWTokenProvider;
 import com.bugra.full_stack_login_app.service.user_services.UserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

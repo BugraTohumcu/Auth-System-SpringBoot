@@ -1,8 +1,9 @@
 package com.bugra.full_stack_login_app.service.user_services;
 
+import com.bugra.full_stack_login_app.dto.ResponseMessage;
 import com.bugra.full_stack_login_app.model.User;
 import com.bugra.full_stack_login_app.repo.UserRepo;
-import com.bugra.full_stack_login_app.request.UsernamePasswordRequest;
+import com.bugra.full_stack_login_app.dto.request.UsernamePasswordRequest;
 import com.bugra.full_stack_login_app.responses.UserResponseMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,15 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public String saveNewUser(UsernamePasswordRequest request) {
+    public ResponseMessage saveNewUser(UsernamePasswordRequest request) {
         User newUser = new User();
         newUser.setUsername(request.getUsername());
         newUser.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
 
         if(userRepo.findUserByUsername(request.getUsername()) != null){
-            return UserResponseMessage.USERNAME_EXIST;
+            return new ResponseMessage(UserResponseMessage.USERNAME_EXIST,false);
         }
         userRepo.save(newUser);
-        return UserResponseMessage.USER_SAVED;
+        return new ResponseMessage(UserResponseMessage.USER_SAVED,true);
     }
 }
