@@ -40,7 +40,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registerNewUser(@RequestBody UsernamePasswordRequest request){
         String response = userService.saveNewUser(request);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
@@ -52,10 +52,10 @@ public class AuthController {
             if(token == null){ throw new Exception("Token is null");}
             ResponseCookie responseCookie = cookieService.createResponseCookie("JWT", token);
             response.addHeader("Set-Cookie" , responseCookie.toString());
-            return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL ,HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL ,HttpStatus.OK);
         }catch (Exception e){
             logger.warn("Something went wrong: {}",e.getMessage());
-            return new ResponseEntity<>(UserResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(UserResponseMessage.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
         }
 
     }

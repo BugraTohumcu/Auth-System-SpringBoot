@@ -1,4 +1,4 @@
-package com.bugra.full_stack_login_app.request;
+package com.bugra.full_stack_login_app.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
