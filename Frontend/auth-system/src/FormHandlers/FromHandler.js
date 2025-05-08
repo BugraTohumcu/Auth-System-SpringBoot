@@ -14,15 +14,10 @@ export async function submitForm(url, username, password, responseElement) {
         if (!res.ok) {
             throw new Error("Network response was not ok");
         }
-        return res.text();
+        return res.json();
     })
     .then(data => {
-        responseElement.innerHTML = data;
-        return fetch('http://localhost:8080/hello', {
-            method: 'GET',
-            headers: { 'Content-Type': 'text/plain' },
-            credentials: 'include'
-        });
+        responseElement.innerHTML = data.message;
     })
     .catch(error => {
         responseElement.innerHTML = `Error: ${error.message}`;
