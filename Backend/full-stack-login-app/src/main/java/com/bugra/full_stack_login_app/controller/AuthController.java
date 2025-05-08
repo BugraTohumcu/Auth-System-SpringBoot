@@ -60,7 +60,7 @@ public class AuthController {
             return new ResponseEntity<>(new ResponseMessage(UserResponseMessage.LOGIN_SUCCESSFUL,true),HttpStatus.OK);
         }catch (Exception e){
             logger.warn("Something went wrong: {}",e.getMessage());
-            return new ResponseEntity<>(new ResponseMessage(UserResponseMessage.USER_NOT_FOUND,false), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ResponseMessage(UserResponseMessage.USER_NOT_FOUND,false), HttpStatus.OK);
         }
 
     }
