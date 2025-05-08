@@ -51,13 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             
             if(tokenProvider.shouldRefreshToken(token)) {
                 token = tokenProvider.generateToken(username);
-                ResponseCookie resCookie = ResponseCookie.from("JWT", token)
-                        .httpOnly(true)
-                        .sameSite("None")
-                        .secure(true)
-                        .path("/")
-                        .maxAge(60 * 60 * 24)
-                        .build();
+                ResponseCookie resCookie = cookieService.createResponseCookie("JWT", token);
                 response.addHeader("Set-Cookie", resCookie.toString());
             }
 
