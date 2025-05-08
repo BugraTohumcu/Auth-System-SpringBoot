@@ -10,14 +10,16 @@ export async function submitForm(url, username, password, responseElement) {
         credentials: 'include',
         body: JSON.stringify({ username: username, password: password })
     })
-    .then(res => {
+    .then(async res => {
+        const data = await res.json();
         if (!res.ok) {
-            throw new Error("Network response was not ok");
+            throw new Error(`${data.message}`);
         }
-        return res.json();
+        return data;
     })
     .then(data => {
         responseElement.innerHTML = data.message;
+        return data.success;
     })
     .catch(error => {
         responseElement.innerHTML = `Error: ${error.message}`;
