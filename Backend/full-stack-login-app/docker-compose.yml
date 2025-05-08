@@ -30,7 +30,7 @@ services:
       - postgres-u-data:/var/lib/postgresql/data
 
   frontend:
-    build: ../../Frontend/
+    build: ../../Frontend/auth-system
     container_name: frontend
     ports:
       - "127.0.0.1:5500:80"
