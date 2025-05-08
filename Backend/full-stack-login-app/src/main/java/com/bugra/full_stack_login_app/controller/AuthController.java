@@ -41,25 +41,26 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ResponseMessage> registerNewUser(@RequestBody UsernamePasswordRequest request){
         ResponseMessage response = userService.saveNewUser(request);
+        logger.debug("Response message: {}",response);
         if(response.isSuccess()){
             return new ResponseEntity<>(response , HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(response , HttpStatus.CONFLICT);
+        return new ResponseEntity<>(response , HttpStatus.OK);
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UsernamePasswordRequest request , HttpServletResponse response){
+    public ResponseEntity<ResponseMessage> login(@RequestBody UsernamePasswordRequest request , HttpServletResponse response){
         try{
             String token = authService.loginAndGenerateToken(request);
             logger.debug("Extracted JWT token:  {}" ,token);
             if(token == null){ throw new Exception("Token is null");}
             ResponseCookie responseCookie = cookieService.createResponseCookie("JWT", token);
             response.addHeader("Set-Cookie" , responseCookie.toString());
-            return new ResponseEntity<>(UserResponseMessage.LOGIN_SUCCESSFUL ,HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseMessage(UserResponseMessage.LOGIN_SUCCESSFUL,true),HttpStatus.OK);
         }catch (Exception e){
             logger.warn("Something went wrong: {}",e.getMessage());
-            return new ResponseEntity<>(UserResponseMessage.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ResponseMessage(UserResponseMessage.USER_NOT_FOUND,false), HttpStatus.UNAUTHORIZED);
         }
 
     }
