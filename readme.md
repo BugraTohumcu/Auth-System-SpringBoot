@@ -75,11 +75,3 @@ fullstack-login/
 - Frontend: JavaScript (Vite, Vanilla JS or your framework)
 - Containerization: Docker, Docker Compose
 
-## License
-
-This project is licensed under the MIT License.
-
----
-
-**Contributions are welcome!**  
-Feel free to open issues or submit pull requests.
